@@ -32,17 +32,26 @@ h1 {
     font-size: 2rem;
     font-weight: bold;
     color: #ffcc00; /* gele letters */
-    background-color: #8b0000; /* volledig rode achtergrond */
+    background-color: #8b0000 !important; /* standaard rood */
     border: 3px solid #ffff66;
     border-radius: 10px;
     text-decoration: none;
     box-shadow: 0 0 40px #ffff66;
-    transition: transform 0.2s, box-shadow 0.2s;
+    transition: transform 0.2s, box-shadow 0.2s, background-color 0.3s;
 }
+
 .raceButton:hover {
     transform: scale(1.1);
     box-shadow: 0 0 30px #ffff66;
+    background-color: #00a000 !important; /* groen bij hover */
 }
+
+.raceButton:click {
+        transform: scale(1.1);
+    box-shadow: 0 0 30px #ffff66;
+    background-color: #00a000 !important; /* groen bij hover */
+}
+
     
 /* Score container (rode achtergrond) */
 #scoreContainer {

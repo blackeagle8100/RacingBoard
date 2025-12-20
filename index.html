@@ -5,34 +5,60 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>🎄 X-mas-Tree RACE Scoreboard 🎄</title>
 <style>
-    body {
-        background-color: red;
-        font-family: 'Comic Sans MS', cursive, sans-serif;
-        text-align: center;
-        padding-top: 50px;
-        color: yellow;
-    }
-    .scorebox {
-        background: #8b0000;
-        border: 5px solid yellow;
-        padding: 40px;
-        font-size: 2rem;
-        color: green;
-        box-shadow: 0 0 30px yellow;
-        animation: glow 3s alternate infinite;
-        margin: 20px auto;
-        width: 300px;
-    }
-    @keyframes glow {
-        from { box-shadow: 0 0 10px #ff0; }
-        to   { box-shadow: 0 0 40px #ff0; }
-    }
+body {
+    background-color: red;
+    font-family: 'Comic Sans MS', cursive, sans-serif;
+    color: yellow;
+    text-align: center;
+    padding: 20px;
+}
+
+h1 {
+    font-size: 3rem;
+    margin-bottom: 20px;
+}
+
+#scoreContainer {
+    background-color: #8b0000;
+    border: 5px solid yellow;
+    width: 400px;
+    max-height: 500px;
+    margin: 0 auto;
+    overflow-y: auto;
+    padding: 10px;
+    box-shadow: 0 0 30px yellow;
+}
+
+.scorebox {
+    font-size: 1.8rem;
+    color: green;
+    padding: 10px;
+    border-bottom: 1px solid yellow;
+    display: flex;
+    justify-content: space-between;
+}
+
+button {
+    margin: 10px 5px;
+    font-size: 2rem;
+    padding: 5px 10px;
+    cursor: pointer;
+}
+
 </style>
 </head>
 <body>
 
-<h1>🎄 X-MASS-Tree RACE 2025-2026 Scoreboard 🎄</h1>
-<div id="scoreContainer"></div>
+<h1>🎄 Kerst Scoreboard 🎄</h1>
+
+<div>
+    <button onclick="scrollUp()">⬆️</button>
+    <button onclick="scrollDown()">⬇️</button>
+</div>
+
+<div id="scoreContainer">
+    <div class="scorebox">Laden...</div>
+</div>
 
 <script type="module">
 import { createClient } from 'https://cdn.jsdelivr.net/npm/@supabase/supabase-js/+esm'
@@ -43,13 +69,12 @@ const SUPABASE_ANON_KEY = "sb_publishable_lun6Mhjl_0P4vqQNaPGyKw_OKNwJ9cW"
 const supabase = createClient(SUPABASE_URL, SUPABASE_ANON_KEY)
 const scoreContainer = document.getElementById("scoreContainer")
 
-// functie om scores te laden
 async function loadScores() {
     const { data, error } = await supabase
-        .from("scoreboard")
-        .select("*")
-        .order("id", { ascending: false })
-        .limit(10) // laat de 10 nieuwste scores zien
+        .from("scores")
+        .select("player_name, lap_time")
+        .order("lap_time", { ascending: true }) // kleinste tijd bovenaan
+        .limit(50)
 
     if (error) {
         scoreContainer.innerHTML = "⚠️ FOUT"
@@ -60,23 +85,37 @@ async function loadScores() {
     // clear container
     scoreContainer.innerHTML = ""
 
-    // loop door alle scores en maak een div voor elke score
-    data.forEach(entry => {
+    data.forEach((entry, index) => {
         const div = document.createElement("div")
         div.className = "scorebox"
-        div.innerText = `${entry.player || "Player"}: ${entry.score}`
+
+        // format lap_time naar mm:ss:ms
+        let time = Number(entry.lap_time)
+        let minutes = Math.floor(time / 60)
+        let seconds = Math.floor(time % 60)
+        let milliseconds = Math.floor((time - Math.floor(time)) * 1000)
+        let formatted = `${String(minutes).padStart(2,'0')}:${String(seconds).padStart(2,'0')}.${String(milliseconds).padStart(3,'0')}`
+
+        div.innerHTML = `<span>${index+1}. ${entry.player_name}</span><span>${formatted}</span>`
         scoreContainer.appendChild(div)
     })
 }
 
 // realtime updates
 supabase
-  .channel('realtime-score')
-  .on('postgres_changes', { event: '*', schema: 'public', table: 'scoreboard' }, payload => {
-      console.log("Realtime update:", payload)
-      loadScores() // herlaad lijst bij elke update
+  .channel('realtime-scores')
+  .on('postgres_changes', { event: '*', schema: 'public', table: 'scores' }, payload => {
+      loadScores()
   })
   .subscribe()
+
+// scroll buttons
+function scrollUp() {
+    scoreContainer.scrollBy({ top: -100, behavior: 'smooth' })
+}
+function scrollDown() {
+    scoreContainer.scrollBy({ top: 100, behavior: 'smooth' })
+}
 
 // eerste keer laden
 loadScores()

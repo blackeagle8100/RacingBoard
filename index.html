@@ -22,6 +22,30 @@ h1 {
     margin-bottom: 20px;
 }
 
+#raceButtonContainer {
+    margin-top: 20px;
+}
+
+.raceButton {
+    display: inline-block;
+    padding: 15px 30px;
+    font-size: 2rem;
+    font-weight: bold;
+    color: #ffcc00; /* gele letters */
+    background-color: #8b0000; /* rode achtergrond */
+    border: 3px solid #ffff66;
+    border-radius: 15px;
+    text-decoration: none;
+    box-shadow: 0 0 20px #ffff66;
+    transition: transform 0.2s, box-shadow 0.2s;
+}
+
+.raceButton:hover {
+    transform: scale(1.1);
+    box-shadow: 0 0 30px #ffff66;
+}
+
+    
 /* Score container (rode achtergrond) */
 #scoreContainer {
     background-color: #8b0000;
@@ -133,6 +157,9 @@ body::after {
 </style>
 </head>
 <body>
+<div id="raceButtonContainer">
+    <a href="https://blackeagle8100.github.io/circuitracer/" target="_blank" class="raceButton">To The Track!</a>
+</div>
 
 <h1></p align = "center">🎄 X-MASS-Tree Race 🎄 <br> 2025-2026</p></h1>
 

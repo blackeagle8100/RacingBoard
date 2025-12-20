@@ -3,93 +3,78 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Kerst Scoreboard 🎄</title>
+<title>🎄 Live Kerst Scoreboard 🎄</title>
 <style>
     body {
-        background-color: #ff0000; /* rode achtergrond */
-        font-family: 'Comic Sans MS', cursive, sans-serif; /* leuk, groot lettertype */
-        display: flex;
-        justify-content: center;
-        align-items: center;
-        height: 100vh;
-        margin: 0;
-    }
-
-    .scoreboard {
-        border: 5px solid yellow;
-        padding: 50px;
+        background-color: red;
+        font-family: 'Comic Sans MS', cursive, sans-serif;
         text-align: center;
-        box-shadow: 0 0 50px gold;
-        animation: glow 2s infinite alternate;
-    }
-
-    h1 {
-        font-size: 3em;
+        padding-top: 50px;
         color: yellow;
-        text-shadow: 0 0 5px green, 0 0 10px red, 0 0 15px yellow;
-        animation: blink 1s infinite;
     }
-
-    .score {
-        font-size: 2em;
+    .scorebox {
+        background: #8b0000;
+        border: 5px solid yellow;
+        padding: 40px;
+        font-size: 3rem;
         color: green;
-        margin-top: 20px;
-        animation: colorShift 3s infinite;
+        box-shadow: 0 0 30px yellow;
+        animation: glow 3s alternate infinite;
     }
-
-    /* Animaties */
-    @keyframes blink {
-        0%, 50%, 100% { opacity: 1; }
-        25%, 75% { opacity: 0.3; }
-    }
-
-    @keyframes colorShift {
-        0% { color: green; }
-        25% { color: yellow; }
-        50% { color: red; }
-        75% { color: yellow; }
-        100% { color: green; }
-    }
-
     @keyframes glow {
-        0% { box-shadow: 0 0 10px gold; }
-        50% { box-shadow: 0 0 50px yellow; }
-        100% { box-shadow: 0 0 10px gold; }
-    }
-
-    /* Kerstlichtjes aan de rand */
-    body::before, body::after {
-        content: '';
-        position: absolute;
-        width: 100%;
-        height: 10px;
-        top: 0;
-        left: 0;
-        background: repeating-linear-gradient(
-            45deg,
-            red, red 10px,
-            green 10px, green 20px,
-            yellow 20px, yellow 30px
-        );
-        animation: blinkLights 1s infinite linear;
-    }
-
-    body::after {
-        top: auto;
-        bottom: 0;
-    }
-
-    @keyframes blinkLights {
-        0% { opacity: 1; }
-        50% { opacity: 0.3; }
-        100% { opacity: 1; }
+        from { box-shadow: 0 0 10px #ff0; }
+        to   { box-shadow: 0 0 40px #ff0; }
     }
 </style>
 </head>
 <body>
-<div class="scoreboard">
-    <h1>🎄 Kerst Scoreboard 🎄</h1>
-    <div class="score">Score: 12345</div>
-</div>
+
+<h1>🎄 Kerst Scoreboard 🎄</h1>
+<div id="scoreDisplay" class="scorebox">Laden...</div>
+
+<!-- Supabase JavaScript SDK -->
+<script type="module">
+import { createClient } from 'https://cdn.jsdelivr.net/npm/@supabase/supabase-js/+esm'
+
+const SUPABASE_URL = "https://itmhwyamdcdcompixnrk.supabase.co"
+const SUPABASE_ANON_KEY = "sb_publishable_lun6Mhjl_0P4vqQNaPGyKw_OKNwJ9cW"
+
+// maak Supabase client aan
+const supabase = createClient(SUPABASE_URL, SUPABASE_ANON_KEY)
+
+// DOM element
+const scoreDisplay = document.getElementById("scoreDisplay")
+
+// functie om score uit DB te halen
+async function loadScore() {
+    const { data, error } = await supabase
+        .from("scoreboard")            // jouw tabelnaam
+        .select("score")               // kolom met score
+        .order("id", { ascending: false })
+        .limit(1)
+
+    if (error) {
+        scoreDisplay.innerText = "⚠️ FOUT"
+        console.error(error)
+    } else {
+        scoreDisplay.innerText = data.length ? data[0].score : "0"
+    }
+}
+
+// realtime luisteren
+supabase
+  .channel('realtime-score')
+  .on('postgres_changes', { event: '*', schema: 'public', table: 'scoreboard' }, payload => {
+      console.log("Realtime update ontvangen:", payload)
+      if(payload.new) {
+          scoreDisplay.innerText = payload.new.score
+      }
+  })
+  .subscribe()
+
+// eerste keer score ophalen
+loadScore()
+</script>
+
 </body>
 </html>

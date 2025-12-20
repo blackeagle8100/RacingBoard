@@ -16,10 +16,12 @@
         background: #8b0000;
         border: 5px solid yellow;
         padding: 40px;
-        font-size: 3rem;
+        font-size: 2rem;
         color: green;
         box-shadow: 0 0 30px yellow;
         animation: glow 3s alternate infinite;
+        margin: 20px auto;
+        width: 300px;
     }
     @keyframes glow {
         from { box-shadow: 0 0 10px #ff0; }
@@ -30,50 +32,54 @@
 <body>
 
 <h1>🎄 Kerst Scoreboard 🎄</h1>
-<div id="scoreDisplay" class="scorebox">Laden...</div>
+<div id="scoreContainer"></div>
 
-<!-- Supabase JavaScript SDK -->
 <script type="module">
 import { createClient } from 'https://cdn.jsdelivr.net/npm/@supabase/supabase-js/+esm'
 
 const SUPABASE_URL = "https://itmhwyamdcdcompixnrk.supabase.co"
 const SUPABASE_ANON_KEY = "sb_publishable_lun6Mhjl_0P4vqQNaPGyKw_OKNwJ9cW"
 
-// maak Supabase client aan
 const supabase = createClient(SUPABASE_URL, SUPABASE_ANON_KEY)
+const scoreContainer = document.getElementById("scoreContainer")
 
-// DOM element
-const scoreDisplay = document.getElementById("scoreDisplay")
-
-// functie om score uit DB te halen
-async function loadScore() {
+// functie om scores te laden
+async function loadScores() {
     const { data, error } = await supabase
-        .from("scoreboard")            // jouw tabelnaam
-        .select("score")               // kolom met score
+        .from("scoreboard")
+        .select("*")
         .order("id", { ascending: false })
-        .limit(1)
+        .limit(10) // laat de 10 nieuwste scores zien
 
     if (error) {
-        scoreDisplay.innerText = "⚠️ FOUT"
+        scoreContainer.innerHTML = "⚠️ FOUT"
         console.error(error)
-    } else {
-        scoreDisplay.innerText = data.length ? data[0].score : "0"
+        return
     }
+
+    // clear container
+    scoreContainer.innerHTML = ""
+
+    // loop door alle scores en maak een div voor elke score
+    data.forEach(entry => {
+        const div = document.createElement("div")
+        div.className = "scorebox"
+        div.innerText = `${entry.player || "Player"}: ${entry.score}`
+        scoreContainer.appendChild(div)
+    })
 }
 
-// realtime luisteren
+// realtime updates
 supabase
   .channel('realtime-score')
   .on('postgres_changes', { event: '*', schema: 'public', table: 'scoreboard' }, payload => {
-      console.log("Realtime update ontvangen:", payload)
-      if(payload.new) {
-          scoreDisplay.innerText = payload.new.score
-      }
+      console.log("Realtime update:", payload)
+      loadScores() // herlaad lijst bij elke update
   })
   .subscribe()
 
-// eerste keer score ophalen
-loadScore()
+// eerste keer laden
+loadScores()
 </script>
 
 </body>

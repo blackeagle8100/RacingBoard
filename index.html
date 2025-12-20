@@ -5,8 +5,9 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>🎄 X-mas-Tree RACE Scoreboard 🎄</title>
 <style>
+/* Algemene pagina instellingen */
 body {
-    background: linear-gradient(to bottom, #006400, #004d00); /* groene kerstachtergrond */
+    background: linear-gradient(to bottom, #006400, #004d00);
     color: yellow;
     font-family: 'Comic Sans MS', cursive, sans-serif;
     text-align: center;
@@ -15,17 +16,19 @@ body {
     position: relative;
 }
 
+/* Pagina titel */
 h1 {
     font-size: 3rem;
     margin-bottom: 20px;
 }
 
-/* Score container */
+/* Score container (rode achtergrond) */
 #scoreContainer {
-    background-color: red; /* rood zoals je vroeger had */
-    border: 5px solid #ffcc00; /* goudgeel voor kerstlook */
-    width: 400px;
-    max-height: 500px;
+    background-color: #8b0000;
+    border: 5px solid #ffcc00;
+    width: 90%;
+    max-width: 450px;
+    max-height: 60vh;
     margin: 0 auto;
     overflow-y: auto;
     padding: 10px;
@@ -34,26 +37,36 @@ h1 {
     z-index: 1;
 }
 
-Alles anders blijf
-
 /* Scorebox */
 .scorebox {
-    font-size: 1.8rem;
+    font-size: 2rem; /* groter lettertype */
+    font-weight: bold;
     color: limegreen;
-    padding: 10px;
+    padding: 15px;
     border-bottom: 1px solid gold;
     display: flex;
     justify-content: space-between;
     text-shadow: 0 0 5px #00ff00, 0 0 10px #ffff00;
-    transition: transform 0.3s ease;
 }
 
-/* Scroll buttons */
+/* Scroll knoppen container */
+#scrollButtons {
+    margin-top: 10px;
+    display: flex;
+    justify-content: center;
+    gap: 20px;
+}
+
 button {
-    margin: 10px 5px;
     font-size: 2rem;
-    padding: 5px 10px;
+    padding: 5px 15px;
     cursor: pointer;
+    border: none;
+    border-radius: 10px;
+    background-color: #ffcc00;
+    color: #8b0000;
+    font-weight: bold;
+    box-shadow: 0 0 10px #ffff66;
 }
 
 /* Knipperende kerstlichtjes */
@@ -92,7 +105,6 @@ body::after {
     pointer-events: none;
     z-index: 0;
 }
-
 .snowflake {
     position: absolute;
     top: -10px;
@@ -102,24 +114,36 @@ body::after {
     pointer-events: none;
     animation: fall linear infinite;
 }
-
 @keyframes fall {
     0% { transform: translateY(0px); opacity:1; }
     100% { transform: translateY(100vh); opacity:0.5; }
+}
+
+/* Responsive: kleinere smartphones */
+@media(max-width: 500px){
+    .scorebox {
+        font-size: 1.5rem;
+        padding: 10px;
+    }
+    button {
+        font-size: 1.5rem;
+        padding: 5px 10px;
+    }
 }
 </style>
 </head>
 <body>
 
-<h1>🎄X-MAS🎄<br>🎄 Tree RACE 🎄 <br> 🎄 2025 - 2026🎄 </h1>
-
-<div>
-    <button onclick="scrollUp()">⬆️</button>
-    <button onclick="scrollDown()">⬇️</button>
-</div>
+<h1></p align = "center">🎄 X-MASS-Tree Race 🎄 <br> 2025-2026</p></h1>
 
 <div id="scoreContainer">
     <div class="scorebox">Laden...</div>
+</div>
+
+<!-- Scroll knoppen onder de lijst -->
+<div id="scrollButtons">
+    <button onclick="scrollUp()">⬆️</button>
+    <button onclick="scrollDown()">⬇️</button>
 </div>
 
 <!-- Sneeuwvlokken container -->
@@ -139,7 +163,7 @@ async function loadScores() {
     const { data, error } = await supabase
         .from("scores")
         .select("player_name, lap_time")
-        .order("lap_time", { ascending: true }) // kleinste tijd eerst
+        .order("lap_time", { ascending: true })
         .limit(50)
 
     if (error) {
@@ -154,17 +178,18 @@ async function loadScores() {
         const div = document.createElement("div")
         div.className = "scorebox"
 
-        // Lap time naar mm:ss:ms
+        // Lap time formatteren mm:ss:ms
         let time = Number(entry.lap_time)
         let minutes = Math.floor(time / 60)
         let seconds = Math.floor(time % 60)
         let milliseconds = Math.floor((time - Math.floor(time)) * 1000)
         let formatted = `${String(minutes).padStart(2,'0')}:${String(seconds).padStart(2,'0')}.${String(milliseconds).padStart(3,'0')}`
 
-        div.innerHTML = `<span>${index+1}. ${entry.player_name}</span><span>${formatted}</span>`
+        // extra spatie tussen nummer, naam en tijd
+        div.innerHTML = `<span>${index+1}.</span> <span style="flex:1; text-align:left;">${entry.player_name}</span> <span>${formatted}</span>`
 
-        // korte animatie bij update
-        div.style.transform = "scale(1.1)"
+        // lichte animatie bij update
+        div.style.transform = "scale(1.05)"
         setTimeout(() => div.style.transform = "scale(1)", 300)
 
         scoreContainer.appendChild(div)
@@ -179,13 +204,9 @@ supabase
   })
   .subscribe()
 
-// Scroll buttons
-function scrollUp() {
-    scoreContainer.scrollBy({ top: -100, behavior: 'smooth' })
-}
-function scrollDown() {
-    scoreContainer.scrollBy({ top: 100, behavior: 'smooth' })
-}
+// Scroll functies
+function scrollUp() { scoreContainer.scrollBy({ top: -100, behavior: 'smooth' }) }
+function scrollDown() { scoreContainer.scrollBy({ top: 100, behavior: 'smooth' }) }
 
 // Sneeuwvlokken genereren
 function createSnow(num = 60) {

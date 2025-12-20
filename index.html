@@ -3,14 +3,16 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>🎄 X-mas-Tree RACE🎄<br> 🎄Scoreboard 🎄</title>
+<title>🎄 X-mas-Tree RACE Scoreboard 🎄</title>
 <style>
 body {
-    background-color: #004000;
-    font-family: 'Comic Sans MS', cursive, sans-serif;
+    background: linear-gradient(to bottom, #006400, #004d00); /* groene kerstachtergrond */
     color: yellow;
+    font-family: 'Comic Sans MS', cursive, sans-serif;
     text-align: center;
     padding: 20px;
+    overflow-x: hidden;
+    position: relative;
 }
 
 h1 {
@@ -18,26 +20,33 @@ h1 {
     margin-bottom: 20px;
 }
 
+/* Score container */
 #scoreContainer {
-    background-color: #8b0000;
-    border: 5px solid yellow;
+    background-color: #004000;
+    border: 5px solid #ffcc00;
     width: 400px;
     max-height: 500px;
     margin: 0 auto;
     overflow-y: auto;
     padding: 10px;
-    box-shadow: 0 0 30px yellow;
+    box-shadow: 0 0 30px #ffff66;
+    position: relative;
+    z-index: 1;
 }
 
+/* Scorebox */
 .scorebox {
     font-size: 1.8rem;
-    color: green;
+    color: limegreen;
     padding: 10px;
-    border-bottom: 1px solid yellow;
+    border-bottom: 1px solid gold;
     display: flex;
     justify-content: space-between;
+    text-shadow: 0 0 5px #00ff00, 0 0 10px #ffff00;
+    transition: transform 0.3s ease;
 }
 
+/* Scroll buttons */
 button {
     margin: 10px 5px;
     font-size: 2rem;
@@ -45,11 +54,62 @@ button {
     cursor: pointer;
 }
 
+/* Knipperende kerstlichtjes */
+body::before, body::after {
+    content: '';
+    position: fixed;
+    width: 100%;
+    height: 10px;
+    left: 0;
+    top: 0;
+    background: repeating-linear-gradient(
+        45deg,
+        red 0 15px,
+        green 15px 30px,
+        yellow 30px 45px
+    );
+    animation: blinkLights 1s infinite linear;
+    z-index: 0;
+}
+body::after {
+    top: auto;
+    bottom: 0;
+}
+@keyframes blinkLights {
+    0%, 100% { opacity: 1; }
+    50% { opacity: 0.3; }
+}
+
+/* Sneeuwvlokken */
+#snowContainer {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    pointer-events: none;
+    z-index: 0;
+}
+
+.snowflake {
+    position: absolute;
+    top: -10px;
+    color: white;
+    font-size: 1em;
+    user-select: none;
+    pointer-events: none;
+    animation: fall linear infinite;
+}
+
+@keyframes fall {
+    0% { transform: translateY(0px); opacity:1; }
+    100% { transform: translateY(100vh); opacity:0.5; }
+}
 </style>
 </head>
 <body>
 
-<h1>🎄X-MAS-Tree RACE🎄 <br> 🎄Scoreboard 🎄</h1>
+<h1>🎄 Kerst Scoreboard 🎄</h1>
 
 <div>
     <button onclick="scrollUp()">⬆️</button>
@@ -60,6 +120,9 @@ button {
     <div class="scorebox">Laden...</div>
 </div>
 
+<!-- Sneeuwvlokken container -->
+<div id="snowContainer"></div>
+
 <script type="module">
 import { createClient } from 'https://cdn.jsdelivr.net/npm/@supabase/supabase-js/+esm'
 
@@ -69,11 +132,12 @@ const SUPABASE_ANON_KEY = "sb_publishable_lun6Mhjl_0P4vqQNaPGyKw_OKNwJ9cW"
 const supabase = createClient(SUPABASE_URL, SUPABASE_ANON_KEY)
 const scoreContainer = document.getElementById("scoreContainer")
 
+// Functie om scores te laden
 async function loadScores() {
     const { data, error } = await supabase
         .from("scores")
         .select("player_name, lap_time")
-        .order("lap_time", { ascending: true }) // kleinste tijd bovenaan
+        .order("lap_time", { ascending: true }) // kleinste tijd eerst
         .limit(50)
 
     if (error) {
@@ -82,14 +146,13 @@ async function loadScores() {
         return
     }
 
-    // clear container
     scoreContainer.innerHTML = ""
 
     data.forEach((entry, index) => {
         const div = document.createElement("div")
         div.className = "scorebox"
 
-        // format lap_time naar mm:ss:ms
+        // Lap time naar mm:ss:ms
         let time = Number(entry.lap_time)
         let minutes = Math.floor(time / 60)
         let seconds = Math.floor(time % 60)
@@ -97,11 +160,16 @@ async function loadScores() {
         let formatted = `${String(minutes).padStart(2,'0')}:${String(seconds).padStart(2,'0')}.${String(milliseconds).padStart(3,'0')}`
 
         div.innerHTML = `<span>${index+1}. ${entry.player_name}</span><span>${formatted}</span>`
+
+        // korte animatie bij update
+        div.style.transform = "scale(1.1)"
+        setTimeout(() => div.style.transform = "scale(1)", 300)
+
         scoreContainer.appendChild(div)
     })
 }
 
-// realtime updates
+// Realtime updates
 supabase
   .channel('realtime-scores')
   .on('postgres_changes', { event: '*', schema: 'public', table: 'scores' }, payload => {
@@ -109,7 +177,7 @@ supabase
   })
   .subscribe()
 
-// scroll buttons
+// Scroll buttons
 function scrollUp() {
     scoreContainer.scrollBy({ top: -100, behavior: 'smooth' })
 }
@@ -117,7 +185,24 @@ function scrollDown() {
     scoreContainer.scrollBy({ top: 100, behavior: 'smooth' })
 }
 
-// eerste keer laden
+// Sneeuwvlokken genereren
+function createSnow(num = 60) {
+    const container = document.getElementById("snowContainer")
+    const emojis = ["❄️","☃️","✨"]
+    for(let i=0;i<num;i++){
+        const flake = document.createElement("div")
+        flake.className = "snowflake"
+        flake.style.left = Math.random()*100 + "vw"
+        flake.style.fontSize = (Math.random()*10+10) + "px"
+        flake.style.animationDuration = (Math.random()*5 + 5) + "s"
+        flake.style.opacity = Math.random()*0.5 + 0.5
+        flake.innerHTML = emojis[Math.floor(Math.random()*emojis.length)]
+        container.appendChild(flake)
+    }
+}
+createSnow(60)
+
+// Eerste keer scores laden
 loadScores()
 </script>
 

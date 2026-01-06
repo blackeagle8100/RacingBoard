@@ -195,10 +195,9 @@ const scoreContainer = document.getElementById("scoreContainer")
 // Functie om scores te laden
 async function loadScores() {
     const { data, error } = await supabase
-        .from("scores")
-        .select("player_name, lap_time")
-        .order("lap_time", { ascending: true })
-        .limit(50)
+  .from("fastest_laps")
+  .select("*")
+  .order("lap_time", { ascending: true })
 
     if (error) {
         scoreContainer.innerHTML = "⚠️ FOUT"

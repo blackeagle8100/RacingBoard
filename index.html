@@ -3,293 +3,93 @@
 <head>
 <meta charset="UTF-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-<title>🏁 SCOREBOARD 🏁</title>
+<title>🎄 X-mas Tree Race</title>
 
 <style>
 /* =========================================================
-   JOUW BESTAANDE CSS (ongewijzigd, zoals je stuurde)
+   JOUW BESTAANDE CSS (basis) — zoveel mogelijk behouden
    ========================================================= */
 body {
-    background: 
-        linear-gradient(rgba(0,0,0,0.65), rgba(0,0,0,0.65)),
-        url("background.png") no-repeat center center fixed;
-    background-size: cover;
-    color:white;
-    font-family:monospace;
-    display:flex;
-    flex-direction:column;
-    align-items:center;
-    touch-action: none;
+  background:
+    linear-gradient(rgba(0,0,0,0.65), rgba(0,0,0,0.65)),
+    url("background.png") no-repeat center center fixed;
+  background-size: cover;
+  color:white;
+  font-family:monospace;
+  display:flex;
+  flex-direction:column;
+  align-items:center;
+  touch-action: none;
 }
 html, body {
-    margin: 0;
-    width: 100%;
-    height: 100%;
-    overflow: hidden;
+  margin: 0;
+  width: 100%;
+  height: 100%;
+  overflow: hidden;
 }
 h2 { display: none !important; }
+
 /* ===== TOPBAR===== */
 #topBar {
-width: 100%;
-height: 48px;
-background: rgba(0,0,0,0.85);
-border-bottom: 2px solid #333;
-display: flex;
-justify-content: center; /*alles in het midden */
-align-items: center;
-box-sizing: border-box;
+  width: 100%;
+  height: 48px;
+  background: rgba(0,0,0,0.85);
+  border-bottom: 2px solid #333;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  box-sizing: border-box;
 }
 
 #centerBar {
-display: flex;
-align-items: center;
-gap: 20px;              /* ruimte tussen laps | scoreboard | hud */
+  display: flex;
+  align-items: center;
+  gap: 16px;
 }
-#lapContainer input {
-width: 50px;
-}
-/* HUD gecentreerd */
+
 #hud {
-display: flex;
-flex-direction: column;
-align-items: flex-start;
-font-size: 14px;
-white-space: nowrap;
-}
-
-#overlay {
-position:fixed;
-top:0; left:0; right:0; bottom:0;
-background:rgba(0,0,0,0.85);
-color:white;
-font-size:48px;
-display:flex;
-flex-direction:column;
-justify-content:center;
-align-items:center;
-z-index:30;
-gap:20px;
-}
-
-#mobileControls {
-position: fixed;
-bottom: 5px;
-left: 0;
-right: 0;
-height: 35%;
-pointer-events: auto;
-display: flex;
-justify-content: space-between;
-padding: 0 15px;
-box-sizing: border-box;
-z-index: 12;
-}
-
-.stick {
-    position: relative;
-    width: 120px;
-    height: 120px;
-    border-radius: 50%;
-    background: rgba(255,255,255,0.12);
-    pointer-events: auto;
-    touch-action: none;
-}
-
-#stickP1 { margin-left: 10px; }
-#stickP2 { margin-right: 10px; }
-
-.knob {
-    position: absolute;
-    left: 50%;
-    top: 50%;
-    width: 50px;
-    height: 50px;
-    background: rgba(255,255,255,0.7);
-    border-radius: 50%;
-    transform: translate(-50%, -50%);
-}
-
-#minigameOverlay {
-position: fixed;
-top: 0;
-left: 0;
-right: 0;
-bottom: 0;
-display: none;
-pointer-events: none;
-z-index: 25;
-}
-
-.minigamePanel {
-    position: absolute;
-    flex-direction: column;
-    align-items: center;
-    background: rgba(0,0,0,0.75);
-    border: 2px solid white;
-    padding: 6px;
-    pointer-events: auto;
-    min-width: 20px;
-    min-height: 80px;
-    width: 100%; /* default */
-    height: auto; /* default */
-    max-height: 80%;
-    display: none;
-    box-sizing: border-box;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  font-size: 14px;
+  white-space: nowrap;
 }
 
 #scoreboardButtonContainer {
-display: flex;
-align-items: center;
-justify-content: center;
-margin: 0 10px; /* beetje ruimte tussen lap counter en HUD */
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin: 0 10px;
 }
 
 .scoreboardButton {
-    display: inline-block;
-    padding: 8px 15px;
-    font-size: 1.2rem; /* kleiner dan game-knop, past beter */
-    font-weight: bold;
-    color: #ffcc00;             /* gele letters */
-    background-color: red;  /* rood */
-    border: 2px solid #ffff66;
-    border-radius: 8px;
-    text-decoration: none;
-    box-shadow: 0 0 15px #ffff66;
-    transition: transform 0.2s, box-shadow 0.2s, background-color 0.3s;
+  display: inline-block;
+  padding: 8px 15px;
+  font-size: 1.05rem;
+  font-weight: bold;
+  color: #ffcc00;
+  background-color: red;
+  border: 2px solid #ffff66;
+  border-radius: 8px;
+  text-decoration: none;
+  box-shadow: 0 0 15px #ffff66;
+  transition: transform 0.2s, box-shadow 0.2s, background-color 0.3s;
 }
-
-.playerRow {
-    display: flex;
-    align-items: center;
-    gap: 6px;
-}
-
-.playerRow label {
-    width: 28px;
-    text-align: right;
-}
-
-.playerRow input {
-    width: 60px;
-}
-
-.stats {
-    min-width: 420px;
-    font-family: monospace;
-}
-
-.scoreboardButton:hover {
-    transform: scale(1.1);
-    box-shadow: 0 0 20px #ffff66;
-    background-color: green; /* groen bij hover */
-}
-
+.scoreboardButton:hover,
 .scoreboardButton:active {
-    transform: scale(1.1);
-    box-shadow: 0 0 20px #ffff66;
-    background-color: green; /* groen bij hover */
+  transform: scale(1.06);
+  box-shadow: 0 0 20px #ffff66;
+  background-color: green;
 }
 
-/* Responsive tweaks */
 @media(max-width:900px){
-    .scoreboardButton {
-        font-size: 1rem;
-        padding: 6px 12px;
-    }
+  .scoreboardButton { font-size: 0.95rem; padding: 6px 12px; }
 }
-
-#gameWrapper {
-display: none;
-
-position: relative;
-width: 100%;
-height: calc(100vh - 48px);
-max-height: calc(100vh - 48px);
-
-display: flex;
-justify-content: center;
-align-items: center;
-overflow: hidden;
-z-index: 10;
-}
-
-#levelSelect {
-display : none;
-position: absolute;
-z-index: 100;
-}
-
-}
-
-#game {
-max-width: 100%;
-max-height: 100%;
-image-rendering: pixelated;
-}
-
-#newGameBtn {
-font-size:24px;
-padding:10px 20px;
-cursor:pointer;
-}
-
-#boostControls {
-display: none; /* default hidden */
-position: absolute;
-pointer-events: auto;
-z-index: 20;
-}
-#boostControls button {
-padding: 15px 20px;
-font-size: 18px;
-}
-/*PHONE/TABLET CONTROLLERS*/
-@media (max-width: 900px) and (orientation: landscape) {
-    #mobileControls {
-    display: block;
-    position: fixed;
-    bottom: 0; /* Stick container onderaan */
-    left: 0;
-    right: 0;
-    height: 30%; /* of wat past */
-    pointer-events: none;
-    z-index: 20;
-    }
-    #boostControls {
-    display: none; /* standaard verborgen */
-    }
-    .stick {
-        position: absolute;
-        bottom: 5%; /* afstand vanaf container bottom */
-        width: 120px;
-        height: 120px;
-        opacity: 0.6;
-        pointer-events: auto;
-    }
-
-    #stickP1 { left: 5%; }
-    #stickP2 { right: 5%; }
-}
-@media (max-width: 600px) and (orientation: landscape) {
-
-    .stick {
-        width: 120px;
-        height: 120px;
-    }
-    #topBar {
-    font-size: 11px;
-    }
-}
-@media (min-width: 900px) and (max-width: 1200px) {
-    /* tablet fine-tuning */
-}
-
 
 /* =========================================================
-   SCOREBOARD-PAGINA EXTRA CSS (past bij jouw look)
-   (alles onder #sbPage zodat er zo weinig mogelijk botst)
+   RACEPAGINA LAYOUT
    ========================================================= */
-#sbPage{
+#page{
   width: 100%;
   height: calc(100vh - 48px);
   display:flex;
@@ -298,8 +98,8 @@ font-size: 18px;
   overflow:hidden;
 }
 
-#sbPanel{
-  width: min(980px, 96vw);
+#panel{
+  width: min(1080px, 96vw);
   height: 100%;
   padding: 12px;
   box-sizing: border-box;
@@ -308,14 +108,14 @@ font-size: 18px;
   gap: 10px;
 }
 
-/* Tabs (Home / X-mass Tree Race) */
-#sbTabs{
+/* Tabs */
+#tabs{
   display:flex;
   justify-content:center;
   gap: 10px;
   flex-wrap: wrap;
 }
-.sbTab{
+.tab{
   cursor:pointer;
   user-select:none;
   padding: 6px 12px;
@@ -324,47 +124,134 @@ font-size: 18px;
   background: rgba(255,255,255,0.06);
   color: white;
   font-size: 14px;
-  font-weight: 700;
+  font-weight: 800;
 }
-.sbTab.active{
+.tab.active{
   border-color: #ffff66;
   box-shadow: 0 0 12px rgba(255,255,102,0.35);
 }
 
 /* Sections */
-.sbSection{
+.section{
   display:none;
   width:100%;
   flex: 1 1 auto;
   overflow:hidden;
 }
-.sbSection.active{ display:block; }
+.section.active{ display:block; }
 
-#sbHomeCard, #sbRaceCard{
+/* Cards */
+.card{
+  width:100%;
+  height: 100%;
   background: rgba(0,0,0,0.35);
   backdrop-filter: blur(4px);
+  border: 2px solid rgba(255,255,255,0.12);
+  border-radius: 14px;
+  box-sizing: border-box;
+  padding: 12px;
 }
-/* Home boodschap */
-#sbHomeCard{
+
+/* HOME: affiche center */
+#homeCard{
   display:flex;
   align-items:center;
   justify-content:center;
   text-align:center;
-}
-#sbHomeMsg{
-  font-size: 18px;
-  line-height: 1.4;
-  font-weight: 800;
-}
-#sbHomeMsg small{
-  display:block;
-  margin-top: 8px;
-  opacity: 0.9;
-  font-weight: 700;
+  position: relative;
 }
 
-/* Year picker */
-#sbYearRow{
+/* Affiche altijd in scherm passen */
+#posterBtn{
+  all: unset;
+  display:block;
+  cursor: zoom-in;
+  max-width: min(650px, 92vw);
+  width: 100%;
+}
+#posterImg{
+  display:block;
+  width: 100%;
+  height: auto;
+  max-height: calc(100vh - 48px - 120px); /* topbar + tabs + padding */
+  object-fit: contain;
+  border-radius: 14px;
+  border:2px solid rgba(255,255,255,0.2);
+  box-shadow: 0 0 40px rgba(0,0,0,0.6);
+}
+
+#homeActions{
+  margin-top: 10px;
+  display:flex;
+  justify-content:center;
+  gap: 10px;
+  flex-wrap: wrap;
+}
+.actionBtn{
+  display:inline-flex;
+  align-items:center;
+  gap:8px;
+  padding: 8px 12px;
+  border-radius: 10px;
+  border: 2px solid #333;
+  background: rgba(255,255,255,0.06);
+  color: white;
+  font-weight: 900;
+  text-decoration:none;
+  user-select:none;
+}
+.actionBtn svg{ width: 18px; height: 18px; fill: #1877F2; }
+
+/* Lightbox overlay */
+#posterOverlay{
+  position: fixed;
+  inset: 0;
+  background: rgba(0,0,0,0.9);
+  z-index: 999;
+  display: none;
+  align-items: center;
+  justify-content: center;
+  padding: 18px;
+  box-sizing: border-box;
+}
+#posterOverlay.open{ display:flex; }
+#posterOverlayInner{
+  width: min(1100px, 96vw);
+  max-height: calc(100vh - 36px);
+  display:flex;
+  flex-direction:column;
+  gap: 10px;
+}
+#posterOverlayImg{
+  width: 100%;
+  height: auto;
+  max-height: calc(100vh - 48px - 140px);
+  object-fit: contain;
+  border-radius: 14px;
+  border: 2px solid rgba(255,255,255,0.2);
+  box-shadow: 0 0 50px rgba(0,0,0,0.7);
+  cursor: zoom-out;
+}
+#posterOverlayActions{
+  display:flex;
+  justify-content:center;
+  gap:10px;
+  flex-wrap: wrap;
+}
+.posterAction{
+  cursor:pointer;
+  user-select:none;
+  padding: 8px 12px;
+  border-radius: 10px;
+  border: 2px solid #ffff66;
+  background: rgba(255,255,255,0.06);
+  color: #ffcc00;
+  font-weight: 900;
+  text-decoration:none;
+}
+
+/* Lists / score containers */
+.rowBar{
   display:flex;
   justify-content:center;
   align-items:center;
@@ -372,7 +259,7 @@ font-size: 18px;
   flex-wrap: wrap;
   margin-bottom: 10px;
 }
-.sbYearBtn{
+.pill{
   cursor:pointer;
   user-select:none;
   padding: 6px 10px;
@@ -381,23 +268,20 @@ font-size: 18px;
   background: rgba(255,255,255,0.06);
   color: white;
   font-size: 14px;
-  font-weight: 800;
+  font-weight: 900;
 }
-.sbYearBtn.active{
+.pill.active{
   border-color: #ffff66;
   box-shadow: 0 0 12px rgba(255,255,102,0.35);
 }
 
-/* Score container: scrollbaar, want html/body overflow hidden */
-#sbScoreContainer{
-  height: calc(100% - 55px);
+.scrollBox{
+  height: calc(100% - 60px);
   overflow:auto;
   border: 2px solid #333;
   border-radius: 12px;
   background: rgba(0,0,0,0.55);
 }
-
-/* Score row */
 .sbRow{
   display:flex;
   gap: 10px;
@@ -418,113 +302,169 @@ font-size: 18px;
   opacity: 0.95;
 }
 
-/* kleine helper text */
-#sbHint{
+.hint{
   margin-top: 8px;
   opacity: 0.85;
   font-size: 12px;
+}
+
+/* Mijn scoreboard: name input */
+#meControls{
+  display:flex;
+  justify-content:center;
+  align-items:center;
+  gap: 10px;
+  flex-wrap: wrap;
+  margin-bottom: 10px;
+}
+#meName{
+  width: min(240px, 70vw);
+  padding: 8px 10px;
+  border-radius: 10px;
+  border: 2px solid #333;
+  background: rgba(0,0,0,0.35);
+  color: white;
+  font-family: monospace;
+  font-weight: 900;
+  outline: none;
+}
+.smallNote{
+  opacity: .85;
+  font-size: 12px;
+  text-align:center;
 }
 </style>
 </head>
 
 <body>
-
-<!-- TOPBAR (past in jouw game UI) -->
+<!-- TOPBAR -->
 <div id="topBar">
   <div id="centerBar">
+
     <div id="scoreboardButtonContainer">
+      <!-- “Race style” knop naar je echte game/track -->
       <a class="scoreboardButton" href="https://blackeagle8100.github.io/circuitracer/" target="_blank" rel="noopener">
-        To The Track!
+        🏁 To The Track!
       </a>
     </div>
 
     <div id="hud">
-      <div style="font-weight:800;">🎄 X-mas-Tree Race</div>
-      <div style="opacity:.85;">Scoreboard</div>
+      <div style="font-weight:900;">🎄 X-mas-Tree Race</div>
+      <div style="opacity:.85;">Race Page</div>
     </div>
+
   </div>
 </div>
 
 <!-- PAGINA -->
-<div id="sbPage">
-  <div id="sbPanel">
+<div id="page">
+  <div id="panel">
 
     <!-- Tabs -->
-    <div id="sbTabs">
-      <div class="sbTab active" data-tab="home">Home</div>
-      <div class="sbTab" data-tab="race">X-mass Tree Race</div>
+    <div id="tabs">
+      <div class="tab active" data-tab="home">Home</div>
+      <div class="tab" data-tab="me">Mijn scoreboard</div>
+      <div class="tab" data-tab="race">X-mass Tree Race</div>
     </div>
 
     <!-- HOME -->
-    <div id="home" class="sbSection active">
-      <div id="sbHomeCard">
-         <div id="sbHomeMsg">
-              <button id="posterBtn" type="button" aria-label="Affiche openen">
-                <img
-                  id="posterImg"
-                  src="affiche2026.png"
-                  alt="X-mass Tree Race 2026"
-                  loading="lazy"
-                />
-              </button>
-              <div id="shareRow">
-                <a id="fbShare" class="shareBtn" href="#" target="_blank" rel="noopener" aria-label="Deel op Facebook">
-                  <!-- simpel FB icoon (SVG) -->
-                  <svg viewBox="0 0 24 24" aria-hidden="true">
-                    <path d="M22 12a10 10 0 1 0-11.5 9.9v-7H8v-3h2.5V9.8c0-2.5 1.5-3.9 3.8-3.9 1.1 0 2.2.2 2.2.2v2.4h-1.2c-1.2 0-1.6.8-1.6 1.5V12H18l-.5 3h-2.7v7A10 10 0 0 0 22 12z"/>
-                  </svg>
-                  <span>Deel</span>
-                </a>
-              </div>
-            </div>
-      </div>
-    </div>
+    <div id="home" class="section active">
+      <div class="card" id="homeCard">
+        <div>
+          <button id="posterBtn" type="button" aria-label="Affiche openen">
+            <img id="posterImg" src="affiche2026.png" alt="X-mass Tree Race 2026" loading="lazy">
+          </button>
 
-    <!-- RACE -->
-    <div id="race" class="sbSection">
-      <div id="sbRaceCard">
-        <div id="sbYearRow">
-          <div style="font-weight:800; opacity:.9;">Jaar:</div>
-          <div class="sbYearBtn active" data-year="2025">2025</div>
-          <!-- later: <div class="sbYearBtn" data-year="2026">2026</div> -->
-        </div>
+          <div id="homeActions">
+            <a class="actionBtn" id="posterDownloadTop" href="affiche2026.png" download>⬇️ Download</a>
 
-        <div id="sbScoreContainer">
-          <div class="sbRow"><span>👉</span><span class="sbName">Selecteer een jaar…</span></div>
-        </div>
+            <a class="actionBtn" id="fbShare" href="#" target="_blank" rel="noopener" aria-label="Deel op Facebook">
+              <svg viewBox="0 0 24 24" aria-hidden="true">
+                <path d="M22 12a10 10 0 1 0-11.5 9.9v-7H8v-3h2.5V9.8c0-2.5 1.5-3.9 3.8-3.9 1.1 0 2.2.2 2.2.2v2.4h-1.2c-1.2 0-1.6.8-1.6 1.5V12H18l-.5 3h-2.7v7A10 10 0 0 0 22 12z"/>
+              </svg>
+              <span>Deel</span>
+            </a>
+          </div>
 
-        <div id="sbHint">
-          Tip: omdat <code>html, body { overflow: hidden; }</code> staat, is enkel dit score-blok scrollbaar.
+          <div class="smallNote">Klik op de affiche om te vergroten.</div>
         </div>
       </div>
     </div>
 
+    <!-- MIJN SCOREBOARD -->
+    <div id="me" class="section">
+      <div class="card">
+        <div id="meControls">
+          <div style="font-weight:900;">Naam:</div>
+          <input id="meName" placeholder="bv. BlackEagle" />
+          <button class="pill" id="meLoadBtn" type="button">↻ Laden</button>
+        </div>
+
+        <div class="rowBar">
+          <div style="font-weight:900; opacity:.9;">Jaar:</div>
+          <div class="pill active meYear" data-year="2025">2025</div>
+          <!-- later: <div class="pill meYear" data-year="2026">2026</div> -->
+        </div>
+
+        <div id="meScoreContainer" class="scrollBox">
+          <div class="sbRow"><span>👉</span><span class="sbName">Geef je naam in en druk “Laden”.</span></div>
+        </div>
+
+        <div class="hint">Tip: als je later <code>device_id</code> opslaat, wordt “mijn scoreboard” automatisch correct (ook als iemand jouw naam nadoet 😅).</div>
+      </div>
+    </div>
+
+    <!-- GLOBAL RACE -->
+    <div id="race" class="section">
+      <div class="card">
+        <div class="rowBar">
+          <div style="font-weight:900; opacity:.9;">Jaar:</div>
+          <div class="pill active raceYear" data-year="2025">2025</div>
+          <!-- later: <div class="pill raceYear" data-year="2026">2026</div> -->
+        </div>
+
+        <div id="raceScoreContainer" class="scrollBox">
+          <div class="sbRow"><span>⏳</span><span class="sbName">Laden…</span></div>
+        </div>
+
+        <div class="hint">Global ranking = snelste tijden. Realtime update zodra iemand een score neerzet.</div>
+      </div>
+    </div>
+
+  </div>
+</div>
+
+<!-- Lightbox overlay -->
+<div id="posterOverlay" role="dialog" aria-modal="true" aria-label="Affiche">
+  <div id="posterOverlayInner">
+    <img id="posterOverlayImg" alt="X-mass Tree Race (vergroot)" />
+    <div id="posterOverlayActions">
+      <a id="posterDownload" class="posterAction" href="affiche2026.png" download>⬇️ Download</a>
+      <button id="posterClose" class="posterAction" type="button">✖ Sluiten</button>
+    </div>
   </div>
 </div>
 
 <script type="module">
 import { createClient } from 'https://cdn.jsdelivr.net/npm/@supabase/supabase-js/+esm'
 
-/**
- * Config per jaar:
- * - Optie A (aanrader): zelfde Supabase project, andere table per jaar (bv. fastest_laps_2025)
- * - Optie B: ander project per jaar (andere url/key)
- */
+/* ===========================
+   CONFIG
+   =========================== */
 const YEAR_CONFIG = {
   "2025": {
     url: "https://itmhwyamdcdcompixnrk.supabase.co",
     anonKey: "sb_publishable_lun6Mhjl_0P4vqQNaPGyKw_OKNwJ9cW",
-    table: "fastest_laps_2025" // <-- zet dit op je echte tabel/view. Als je gewoon "fastest_laps" gebruikt: verander hier.
+    table: "fastest_laps_2025"
   }
   // "2026": { url:"...", anonKey:"...", table:"fastest_laps_2026" }
 }
 
-let activeYear = "2025"
-let supabase = null
-let realtimeChannel = null
+const posterSrc = "affiche2026.png"
 
-const scoreEl = document.getElementById("sbScoreContainer")
-
+/* ===========================
+   HELPERS
+   =========================== */
 function formatLapTime(value){
   const t = Number(value)
   const minutes = Math.floor(t / 60)
@@ -534,20 +474,53 @@ function formatLapTime(value){
 }
 
 function setTab(tabId){
-  document.querySelectorAll(".sbTab").forEach(t => t.classList.toggle("active", t.dataset.tab === tabId))
-  document.querySelectorAll(".sbSection").forEach(sec => sec.classList.toggle("active", sec.id === tabId))
+  document.querySelectorAll(".tab").forEach(t => t.classList.toggle("active", t.dataset.tab === tabId))
+  document.querySelectorAll(".section").forEach(sec => sec.classList.toggle("active", sec.id === tabId))
 }
 
-async function loadScores(){
-  const cfg = YEAR_CONFIG[activeYear]
+/* simpele device id (voor later). Nu gebruiken we hem nog niet in query,
+   maar je kan hem in je game opslaan in de DB als kolom "device_id". */
+function getDeviceId(){
+  const key = "xmas_device_id"
+  let v = localStorage.getItem(key)
+  if(!v){
+    v = (crypto?.randomUUID?.() ?? `dev_${Math.random().toString(16).slice(2)}_${Date.now()}`)
+    localStorage.setItem(key, v)
+  }
+  return v
+}
+getDeviceId()
+
+/* ===========================
+   SUPABASE STATE
+   =========================== */
+let activeYearRace = "2025"
+let activeYearMe = "2025"
+
+let sbClient = null
+let realtimeChannel = null
+
+const raceEl = document.getElementById("raceScoreContainer")
+const meEl = document.getElementById("meScoreContainer")
+
+function initClientForYear(year){
+  const cfg = YEAR_CONFIG[year]
+  if(!cfg) return null
+  return createClient(cfg.url, cfg.anonKey)
+}
+
+/* ===========================
+   GLOBAL RACE
+   =========================== */
+async function loadRaceScores(){
+  const cfg = YEAR_CONFIG[activeYearRace]
   if(!cfg){
-    scoreEl.innerHTML = `<div class="sbRow"><strong>⚠️</strong><span class="sbName">Geen config voor ${activeYear}</span></div>`
+    raceEl.innerHTML = `<div class="sbRow"><strong>⚠️</strong><span class="sbName">Geen config voor ${activeYearRace}</span></div>`
     return
   }
+  raceEl.innerHTML = `<div class="sbRow"><span>⏳</span><span class="sbName">Laden (${activeYearRace})...</span></div>`
 
-  scoreEl.innerHTML = `<div class="sbRow"><span>⏳</span><span class="sbName">Laden (${activeYear})...</span></div>`
-
-  const { data, error } = await supabase
+  const { data, error } = await sbClient
     .from(cfg.table)
     .select("*")
     .order("lap_time", { ascending: true })
@@ -555,80 +528,181 @@ async function loadScores(){
 
   if(error){
     console.error(error)
-    scoreEl.innerHTML = `<div class="sbRow"><strong>⚠️</strong><span class="sbName">FOUT bij laden</span></div>`
+    raceEl.innerHTML = `<div class="sbRow"><strong>⚠️</strong><span class="sbName">FOUT bij laden</span></div>`
     return
   }
 
   if(!data || data.length === 0){
-    scoreEl.innerHTML = `<div class="sbRow"><span>🫥</span><span class="sbName">Nog geen scores voor ${activeYear}…</span></div>`
+    raceEl.innerHTML = `<div class="sbRow"><span>🫥</span><span class="sbName">Nog geen scores voor ${activeYearRace}…</span></div>`
     return
   }
 
-  scoreEl.innerHTML = ""
+  raceEl.innerHTML = ""
   data.forEach((row, i) => {
     const div = document.createElement("div")
     div.className = "sbRow"
     const name = row.player_name ?? "unknown"
     const time = formatLapTime(row.lap_time)
-
     div.innerHTML = `
       <strong>${i+1}.</strong>
       <span class="sbName">${name}</span>
       <span class="sbTime">${time}</span>
     `
-    scoreEl.appendChild(div)
+    raceEl.appendChild(div)
   })
 }
 
-function connectYear(year){
-  activeYear = year
-
-  // UI active state
-  document.querySelectorAll(".sbYearBtn").forEach(b => b.classList.toggle("active", b.dataset.year === year))
+function connectRaceYear(year){
+  activeYearRace = year
+  document.querySelectorAll(".raceYear").forEach(b => b.classList.toggle("active", b.dataset.year === year))
 
   const cfg = YEAR_CONFIG[year]
   if(!cfg){
-    scoreEl.innerHTML = `<div class="sbRow"><strong>⚠️</strong><span class="sbName">Geen config voor ${year}</span></div>`
+    raceEl.innerHTML = `<div class="sbRow"><strong>⚠️</strong><span class="sbName">Geen config voor ${year}</span></div>`
     return
   }
 
-  // nieuwe client voor dat jaar
-  supabase = createClient(cfg.url, cfg.anonKey)
+  // (Re)create client & realtime per jaar
+  sbClient = initClientForYear(year)
 
-  // oude realtime channel weg
   if(realtimeChannel){
-    supabase.removeChannel(realtimeChannel)
+    sbClient.removeChannel(realtimeChannel)
     realtimeChannel = null
   }
 
-  // load + realtime
-  loadScores()
+  loadRaceScores()
 
-  realtimeChannel = supabase
-    .channel(`realtime-scores-${year}`)
-    .on('postgres_changes', { event: '*', schema: 'public', table: cfg.table }, payload => {
-      loadScores()
+  realtimeChannel = sbClient
+    .channel(`realtime-global-${year}`)
+    .on('postgres_changes', { event: '*', schema: 'public', table: cfg.table }, () => {
+      loadRaceScores()
     })
     .subscribe()
 }
 
-/* Tabs clicks */
-document.querySelectorAll(".sbTab").forEach(tab => {
-  tab.addEventListener("click", () => {
-    setTab(tab.dataset.tab)
+/* ===========================
+   MIJN SCOREBOARD
+   =========================== */
+async function loadMyScores(){
+  const cfg = YEAR_CONFIG[activeYearMe]
+  if(!cfg){
+    meEl.innerHTML = `<div class="sbRow"><strong>⚠️</strong><span class="sbName">Geen config voor ${activeYearMe}</span></div>`
+    return
+  }
+
+  const name = (document.getElementById("meName").value || "").trim()
+  if(!name){
+    meEl.innerHTML = `<div class="sbRow"><span>👉</span><span class="sbName">Vul eerst je naam in.</span></div>`
+    return
+  }
+
+  meEl.innerHTML = `<div class="sbRow"><span>⏳</span><span class="sbName">Laden (${activeYearMe})...</span></div>`
+
+  // Optie 1: filter op player_name (werkt meteen)
+  // Optie 2 (aanrader later): filter op device_id + naam
+  const { data, error } = await sbClient
+    .from(cfg.table)
+    .select("*")
+    .eq("player_name", name)
+    .order("lap_time", { ascending: true })
+    .limit(250)
+
+  if(error){
+    console.error(error)
+    meEl.innerHTML = `<div class="sbRow"><strong>⚠️</strong><span class="sbName">FOUT bij laden</span></div>`
+    return
+  }
+
+  if(!data || data.length === 0){
+    meEl.innerHTML = `<div class="sbRow"><span>🫥</span><span class="sbName">Geen tijden gevonden voor “${name}” in ${activeYearMe}…</span></div>`
+    return
+  }
+
+  meEl.innerHTML = ""
+  data.forEach((row, i) => {
+    const div = document.createElement("div")
+    div.className = "sbRow"
+    const time = formatLapTime(row.lap_time)
+    const when = row.created_at ? new Date(row.created_at).toLocaleString("nl-BE") : null
+    div.innerHTML = `
+      <strong>${i+1}.</strong>
+      <span class="sbName">${row.track_name ?? "run" }${when ? ` <span style="opacity:.7;">(${when})</span>` : ""}</span>
+      <span class="sbTime">${time}</span>
+    `
+    meEl.appendChild(div)
   })
+}
+
+function setMyYear(year){
+  activeYearMe = year
+  document.querySelectorAll(".meYear").forEach(b => b.classList.toggle("active", b.dataset.year === year))
+  // herlaad als we al iets hebben ingevuld
+  const n = (document.getElementById("meName").value || "").trim()
+  if(n) loadMyScores()
+}
+
+/* ===========================
+   HOME: poster lightbox + share
+   =========================== */
+const posterBtn = document.getElementById("posterBtn")
+const posterOverlay = document.getElementById("posterOverlay")
+const posterOverlayImg = document.getElementById("posterOverlayImg")
+const posterClose = document.getElementById("posterClose")
+const posterDownload = document.getElementById("posterDownload")
+const fbShare = document.getElementById("fbShare")
+
+posterDownload.href = posterSrc
+document.getElementById("posterDownloadTop").href = posterSrc
+
+function updateFacebookShareLink(){
+  const pageUrl = encodeURIComponent(window.location.href)
+  const quote = encodeURIComponent("🎄 X-mas-Tree Race – check de affiche & volg het klassement!")
+  fbShare.href = `https://www.facebook.com/sharer/sharer.php?u=${pageUrl}&quote=${quote}`
+}
+updateFacebookShareLink()
+
+function openPoster(){
+  posterOverlayImg.src = posterSrc
+  posterOverlay.classList.add("open")
+  document.body.style.overflow = "hidden"
+}
+function closePoster(){
+  posterOverlay.classList.remove("open")
+  posterOverlayImg.src = ""
+  document.body.style.overflow = ""
+}
+
+posterBtn?.addEventListener("click", openPoster)
+posterClose?.addEventListener("click", closePoster)
+posterOverlayImg?.addEventListener("click", closePoster)
+posterOverlay?.addEventListener("click", (e) => { if(e.target === posterOverlay) closePoster() })
+window.addEventListener("keydown", (e) => { if(e.key === "Escape" && posterOverlay.classList.contains("open")) closePoster() })
+
+/* ===========================
+   UI events
+   =========================== */
+document.querySelectorAll(".tab").forEach(tab => {
+  tab.addEventListener("click", () => setTab(tab.dataset.tab))
 })
 
-/* Year clicks */
-document.querySelectorAll(".sbYearBtn").forEach(btn => {
-  btn.addEventListener("click", () => {
-    connectYear(btn.dataset.year)
-  })
+document.querySelectorAll(".raceYear").forEach(btn => {
+  btn.addEventListener("click", () => connectRaceYear(btn.dataset.year))
 })
 
-/* Init: zet jaar klaar, maar je kan gerust pas connecten wanneer je naar race-tab gaat.
-   Ik connect meteen zodat realtime al actief is als je de tab opent. */
-connectYear("2025")
+document.querySelectorAll(".meYear").forEach(btn => {
+  btn.addEventListener("click", () => setMyYear(btn.dataset.year))
+})
+
+document.getElementById("meLoadBtn").addEventListener("click", loadMyScores)
+document.getElementById("meName").addEventListener("keydown", (e) => {
+  if(e.key === "Enter") loadMyScores()
+})
+
+/* ===========================
+   INIT
+   =========================== */
+connectRaceYear("2025")
+setMyYear("2025")
 </script>
 
 </body>

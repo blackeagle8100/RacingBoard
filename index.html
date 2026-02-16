@@ -10,7 +10,10 @@
    JOUW BESTAANDE CSS (ongewijzigd, zoals je stuurde)
    ========================================================= */
 body {
-    background:#111;
+    background: 
+        linear-gradient(rgba(0,0,0,0.65), rgba(0,0,0,0.65)),
+        url("achtergrond.jpg") no-repeat center center fixed;
+    background-size: cover;
     color:white;
     font-family:monospace;
     display:flex;
@@ -463,16 +466,16 @@ font-size: 18px;
     <div id="home" class="sbSection active">
       <div id="sbHomeCard">
         <div id="sbHomeMsg">
-          See You Next Year!<br/>
-          X-mass-tree race 2026
-          <small>7-12-2026 tot 31-1-2027 — don’t miss out!</small>
-
-          <!-- Als je liever afbeelding:
-          <div style="margin-top:12px;">
-            <img src="jouw-afbeelding.png" style="max-width: min(520px, 90vw); border-radius:12px; border:2px solid #333;" />
-          </div>
-          -->
-        </div>
+              <img src="affiche2026.jpg"
+                   alt="X-mass Tree Race 2026"
+                   style="
+                     max-width: min(600px, 90vw);
+                     width:100%;
+                     border-radius:14px;
+                     border:2px solid rgba(255,255,255,0.2);
+                     box-shadow: 0 0 40px rgba(0,0,0,0.6);
+                   ">
+         </div>
       </div>
     </div>
 
